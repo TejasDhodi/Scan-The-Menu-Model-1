@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { FaUserCircle } from "react-icons/fa";
 import axios from 'axios';
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
     const [registerInputs, setRegisterInputs] = useState({
@@ -14,9 +16,14 @@ const Register = () => {
         enteredOtp: ''
     });
 
+    const [errorMsg, setErrorMsg] = useState('');
     const [showVerification, setShowVerification] = useState(false);
     const [showInputs, setShowInputs] = useState(false);
     const [authToken, setAuthToken] = useState('');
+
+    const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
 
     // To hadle the onchange of inputs
     const handleRegisterInputs = (e) => {
@@ -28,8 +35,10 @@ const Register = () => {
     };
 
     // To Send Otp
-    const handleSendOtp = async () => {
+    const handleSendOtp = async (e) => {
         try {
+            e.preventDefault();
+            setLoading(true)
             const response = await axios.post('https://scan-the-menu-model-1.onrender.com/api/v1/sendmail', { email: registerInputs.email }, {
                 headers: {
                     "Content-Type": 'application/json'
@@ -38,16 +47,27 @@ const Register = () => {
 
             if (response.status === 200) {
                 setShowVerification(true);
-                alert('Otp Sent')
+
+                toast.success('Otp Sent', {
+                    autoClose: 1500
+                })
+
+                setLoading(false);
             }
+
+            setErrorMsg('')
         } catch (error) {
+            setLoading(false)
+            setErrorMsg(error.response.data.message)
             console.log('Error While Sending Otp To Mail');
         }
     }
 
     // To Verify Otp
-    const handleVerifyOtp = async () => {
+    const handleVerifyOtp = async (e) => {
         try {
+            e.preventDefault();
+            setLoading(true)
             const response = await axios.post('https://scan-the-menu-model-1.onrender.com/api/v1/sendmail/verify', {
                 email: registerInputs.email,
                 enteredOtp: Number(registerInputs.enteredOtp)
@@ -57,13 +77,22 @@ const Register = () => {
 
 
             if (response.status === 200) {
-                alert('Email Verified');
+                
+                toast.success('Email Verified', {
+                    autoClose: 1500
+                })
+
                 setAuthToken(data?.token)
                 setShowInputs(true);
                 setShowVerification(false)
+                setLoading(false);
             }
 
+            setErrorMsg('');
+
         } catch (error) {
+            setLoading(false);
+            setErrorMsg(error.response.data.message)
             console.log('Unable to verify otp : ', error);
         }
     }
@@ -72,6 +101,7 @@ const Register = () => {
     const handleRegisterSubmit = async (e) => {
         try {
             e.preventDefault();
+            setLoading(true);
             console.log(registerInputs);
             const response = await axios.post('https://scan-the-menu-model-1.onrender.com/api/v1/register', registerInputs, {
                 headers: {
@@ -81,11 +111,20 @@ const Register = () => {
             });
 
             if (response.status === 201) {
-                alert('Registration SuccessFull')
+
+                toast.success('Registration SuccessFull', {
+                    autoClose: 1500
+                })
+
+                navigate('/signin')
+                setLoading(false)
             }
             const data = response.data;
+            setErrorMsg('');
             console.log('Registered User: ', data);
         } catch (error) {
+            setLoading(false);
+            setErrorMsg(error.response.data.message)
             console.log('Error while registering user : ', error);
         }
 
@@ -93,7 +132,7 @@ const Register = () => {
 
     return (
         <main className='formContainer main'>
-            <form className="form" onSubmit={handleRegisterSubmit}>
+            <form className="form" onSubmit={authToken && handleRegisterSubmit}>
 
                 <div className="authHeader linkIcons">
                     <FaUserCircle />
@@ -101,6 +140,7 @@ const Register = () => {
                 </div>
 
                 <div className="inputFields">
+                    <p>{JSON.stringify(errorMsg)}</p>
                     <div className="inputs">
                         <label htmlFor="email">Email Id</label>
                         <div className="emailVal">
@@ -108,14 +148,15 @@ const Register = () => {
                             {
                                 showInputs ?
                                     <span>✅</span> :
-                                    <button onClick={handleSendOtp}>{showVerification ? 'Resend' : 'Get Otp'}</button>
+                                    <button onClick={handleSendOtp}>{showVerification ? 'Resend' : loading ? '...' : 'Get Otp'}</button>
+                                    
                             }
                         </div>
                         {
                             showVerification &&
                             <div className="emailVal otpVal">
                                 <input type="text" name="enteredOtp" id="enteredOtp" value={registerInputs.enteredOtp} onChange={handleRegisterInputs} autoFocus />
-                                <button onClick={handleVerifyOtp}>Verify</button>
+                                <button onClick={handleVerifyOtp}>{loading? '...' : 'Verify'}</button>
                             </div>
                         }
                     </div>
@@ -143,7 +184,7 @@ const Register = () => {
                 </div>
 
                 <div className="controls">
-                    <button type='submit' className="btn">Submit</button>
+                    <button type='submit' className="btn">{loading? '...' : 'Submit'}</button>
                 </div>
 
                 <div className="askAccount">

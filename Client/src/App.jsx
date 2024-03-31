@@ -7,6 +7,10 @@ import { getDish } from './Features/DishesSlice'
 import { useLocation } from 'react-router-dom'
 import { saveUserProfileDetails } from './Features/AuthSlice'
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { hideDishLoad, showDishLoad } from './Features/LoadingSlice'
+
 const App = () => {
   // const [url, setUrl] = useState(false);
 
@@ -18,11 +22,14 @@ const App = () => {
 
   const getDishData = async () => {
     try {
-
+      dispatch(showDishLoad(true));
       const response = await axios.get('https://scan-the-menu-model-1.onrender.com/api/v1/dishes');
       const data = response.data.dishdata;
 
-      dispatch(getDish(data));
+      if(response.status === 200) {
+        dispatch(getDish(data));
+        dispatch(hideDishLoad(false))
+      }
 
     } catch (error) {
       console.log('error while fetching dish Data form database : ', error);
@@ -64,6 +71,8 @@ const App = () => {
 
       {/* Users Route */}
       <UserRoute />
+
+      <ToastContainer />
     </>
   )
 }
