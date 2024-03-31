@@ -55,9 +55,9 @@ const verifyPayment = async (req, res) => {
                 razorpay_signature,
             })
 
-            return res.redirect(`https://scan-the-menu.vercel.app/success?payment_id=${razorpay_payment_id}&payment=${updatedData._id}`);
+            return res.redirect(`https://scan-the-menu-model-1.vercel.app/success?payment_id=${razorpay_payment_id}&payment=${updatedData._id}`);
         } else {
-            return res.redirect('https://scan-the-menu.vercel.app/fail')
+            return res.redirect('https://scan-the-menu-model-1.vercel.app/fail')
         }
 
     } catch (error) {
