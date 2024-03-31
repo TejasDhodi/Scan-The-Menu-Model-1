@@ -21,7 +21,7 @@ const AdminAuthentication = () => {
     const handleSubmit = async (e) => {
         try {
             e.preventDefault();
-            const response = await axios.post('https://scan-the-menu.onrender.com/api/v1/adminAuth', inputs, {
+            const response = await axios.post('https://scan-the-menu-model-1.onrender.com/api/v1/adminAuth', inputs, {
                 headers: {
                     "Content-Type": 'application/json'
                 }

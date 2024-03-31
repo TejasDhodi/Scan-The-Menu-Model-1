@@ -32,7 +32,7 @@ const Orders = () => {
 
   const handleGetPendingOrders = async () => {
     try {
-      const response = await axios.get(`https://scan-the-menu.onrender.com/api/v1/orders/pending?page=${pendingCurrentPage.current}&limit=${pageLimit}`);
+      const response = await axios.get(`https://scan-the-menu-model-1.onrender.com/api/v1/orders/pending?page=${pendingCurrentPage.current}&limit=${pageLimit}`);
       const data = response.data;
       setPendingPageCount(data?.result.pageCount);
       setPendingOrders(data?.result.paginatedResult);
@@ -44,7 +44,7 @@ const Orders = () => {
 
   const handleGetDeliveredOrders = async () => {
     try {
-      const response = await axios.get(`https://scan-the-menu.onrender.com/api/v1/orders/delivered?page=${deliveredCurrentPage.current}&limit=${pageLimit}`);
+      const response = await axios.get(`https://scan-the-menu-model-1.onrender.com/api/v1/orders/delivered?page=${deliveredCurrentPage.current}&limit=${pageLimit}`);
       const data = response.data;
       setDeliveredPageCount(data?.result.pageCount);
       setDeliveredOrders(data?.result.paginatedResult);
@@ -55,7 +55,7 @@ const Orders = () => {
 
   const handleUpdateStatusTrue = async (id) => {
     try {
-      const response = await axios.put(`https://scan-the-menu.onrender.com/api/v1/orders/delivered/${id}`);
+      const response = await axios.put(`https://scan-the-menu-model-1.onrender.com/api/v1/orders/delivered/${id}`);
       const data = response.data;
       alert(data.message)
 
@@ -71,7 +71,7 @@ const Orders = () => {
 
   const handleUpdateStatusFalse = async (id) => {
     try {
-      const response = await axios.put(`https://scan-the-menu.onrender.com/api/v1/orders/undoDelivered/${id}`);
+      const response = await axios.put(`https://scan-the-menu-model-1.onrender.com/api/v1/orders/undoDelivered/${id}`);
       const data = response.data;
 
       alert(data.message)

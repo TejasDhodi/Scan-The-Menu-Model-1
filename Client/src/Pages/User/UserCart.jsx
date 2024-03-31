@@ -51,7 +51,7 @@ const UserCart = () => {
 
     const handleCheckout = async () => {
         try {
-            const response = await axios.post('https://scan-the-menu.onrender.com/api/v1/checkout', {
+            const response = await axios.post('https://scan-the-menu-model-1.onrender.com/api/v1/checkout', {
                 user: userName, orderedDish: data, amount: total, orderDelivered
             })
 
@@ -66,7 +66,7 @@ const UserCart = () => {
                 "description": "Test Transaction",
                 "image": "https://example.com/your_logo",
                 "order_id": paymentData.order_id,
-                "callback_url": "https://scan-the-menu.onrender.com/api/v1/checkout/verifyPayment",
+                "callback_url": "https://scan-the-menu-model-1.onrender.com/api/v1/checkout/verifyPayment",
                 "prefill": {
                     "name": "Gaurav Kumar",
                     "email": "gaurav.kumar@example.com",

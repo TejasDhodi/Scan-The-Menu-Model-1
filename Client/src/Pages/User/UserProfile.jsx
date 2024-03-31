@@ -25,7 +25,7 @@ const UserProfile = () => {
 
     const handleRecentOrders = async () => {
         try {
-            const response = await axios.get(`https://scan-the-menu.onrender.com/api/v1/recentOrders/${encodedName}`);
+            const response = await axios.get(`https://scan-the-menu-model-1.onrender.com/api/v1/recentOrders/${encodedName}`);
             const data = response.data?.recentOrders;
 
             if (response.status === 200) {
