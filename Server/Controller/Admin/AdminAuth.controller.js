@@ -6,12 +6,13 @@ const adminAuthController = async (req, res) => {
         const admin = await adminCredentials.find((credential) => credential.userName === userName && credential.password === password)
 
         if (admin) {
-            res.status(201).json({
+            return res.status(200).json({
                 success: true,
-                message: "Login Successfull"
+                message: "Login Successfull",
+                adminAuthToken: req.adminAuthToken
             });
-        } else {
-            res.status(400).json({
+        }  else {
+            return res.status(400).json({
                 success: false,
                 message: "Invalid Login Credentials"
             });
@@ -20,7 +21,8 @@ const adminAuthController = async (req, res) => {
         console.error("Error in adminAuthController:", error);
         res.status(500).json({
             success: false,
-            message: "Internal Server Error"
+            message: "Internal Server Error",
+            error: error.message
         });
     }
 }
