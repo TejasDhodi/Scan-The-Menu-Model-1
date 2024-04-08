@@ -23,11 +23,11 @@ const PaymentSuccess = () => {
     try {
       const response = await axios.get(`https://scan-the-menu-model-1.onrender.com/api/v1/checkout/detail/${paymentId}`);
       const data = response.data;
-      setPaymentData(data.singlePayment);
+      setPaymentData(data.singlePayment[0]);
 
-      console.log('Detail ata : ', data);
+      console.log('Detail ata : ', data.singlePayment[0]);
     } catch (error) {
-      console.log(`Unable to fetch details of ${paymentId}`);
+      console.log(`Unable to fetch details  of ${paymentId}`);
     }
   }
 
@@ -78,7 +78,7 @@ const PaymentSuccess = () => {
 
   useEffect(() => {
     handleGetPaymentDetail();
-    console.log('Payment Data : ', paymentData);
+    console.log('Getting Payemtnt data : ', paymentData);
   }, [])
 
   useEffect(() => {
