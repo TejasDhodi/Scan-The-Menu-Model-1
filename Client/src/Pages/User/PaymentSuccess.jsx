@@ -17,7 +17,7 @@ const PaymentSuccess = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const userName = useSelector(state => state.authentication.userProfile?.fullName)
-  const paymentId = searchParams.get('payment');
+  const paymentId = searchParams.get('payment_id');
 
   const handleGetPaymentDetail = async () => {
     try {
