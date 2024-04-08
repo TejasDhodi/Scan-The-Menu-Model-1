@@ -21,7 +21,7 @@ const PaymentSuccess = () => {
 
   const handleGetPaymentDetail = async () => {
     try {
-      const response = await axios.get(`https://scan-the-menu-model-1.onrender.com/api/v1/placeOrder/detail/${paymentId}`);
+      const response = await axios.get(`https://scan-the-menu-model-1.onrender.com/api/v1/checkout/detail/${paymentId}`);
       const data = response.data;
       setPaymentData(data.singlePayment);
 
