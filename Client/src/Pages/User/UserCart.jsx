@@ -14,6 +14,8 @@ const UserCart = () => {
     const dispatch = useDispatch();
     const data = useSelector(state => state.cart);
     const userName = useSelector(state => state.authentication.userProfile?.fullName)
+    const userEmail = useSelector(state => state.authentication.userProfile?.email)
+    const userPhone = useSelector(state => state.authentication.userProfile?.phone)
     const cartLength = data.data.length;
     const navigate = useNavigate();
 
@@ -68,9 +70,9 @@ const UserCart = () => {
                 "order_id": paymentData.order_id,
                 "callback_url": "https://scan-the-menu-model-1.onrender.com/api/v1/checkout/verifyPayment",
                 "prefill": {
-                    "name": "Gaurav Kumar",
-                    "email": "gaurav.kumar@example.com",
-                    "contact": "9000090000"
+                    "name": userName,
+                    "email": userEmail,
+                    "contact": `+91 ${userPhone}`
                 },
                 "notes": {
                     "address": "Razorpay Corporate Office"
@@ -84,7 +86,11 @@ const UserCart = () => {
             razor.open();
 
         } catch (error) {
-            console.log('Unable to proceed for Payments : ', error);
+            let warn = (error.response.data.error).split(':');
+            toast.warning(warn[2], {
+                autoClose: 1500
+            })
+            console.log('Unable to place order online : ', error);
         }
     }
 
@@ -105,65 +111,68 @@ const UserCart = () => {
             <div className="cartDetails">
                 <h3>Shopping Cart</h3>
             </div>
-            {
-                cartLength === 0 ? <h2>Your Cart Is Empty</h2> :
-                    <table className='cartData'>
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Title</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Total Price</th>
-                                <th>Remove</th>
-                            </tr>
-                        </thead>
 
-                        <tbody className='cartItems'>
-                            {
-                                cartData.map((currElem, index) => {
-                                    const { dishName, file, dishPrice, quantity, _id } = currElem;
-                                    return (
-                                        <tr key={index}>
-                                            <td className="itemImg">
-                                                <img src={file} alt={dishName} />
-                                            </td>
-                                            <td className="itemTitle">
-                                                <h4>{dishName}</h4>
-                                            </td>
-                                            <td className="itemQuantity">
-                                                <h4 className='quantityControl dFlex'>
-                                                    <span onClick={() => quantity <= 1 ? handleRemoveItem(_id) : handleDecreaseQuantity(_id)}>-</span>
-                                                    {quantity}
-                                                    <span onClick={() => handleIncreaseQuantity(_id)}>+</span>
-                                                </h4>
-                                            </td>
-                                            <td className="itemPrice">
-                                                <h4>{dishPrice} Rs</h4>
-                                            </td>
-                                            <td className='itemTotalprice'>
-                                                <h4>{dishPrice * quantity} Rs</h4>
-                                            </td>
-                                            <td className="itemControls">
-                                                <button onClick={() => handleRemoveItem(_id)}><FaTrashAlt /></button>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            }
+            <div className="cartTable">
+                {
+                    cartLength === 0 ? <h2>Your Cart Is Empty</h2> :
+                        <table className='cartData'>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Title</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total Price</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
 
-                        </tbody>
+                            <tbody className='cartItems'>
+                                {
+                                    cartData.map((currElem, index) => {
+                                        const { dishName, file, dishPrice, quantity, _id } = currElem;
+                                        return (
+                                            <tr key={index}>
+                                                <td className="itemImg">
+                                                    <img src={file} alt={dishName} />
+                                                </td>
+                                                <td className="itemTitle">
+                                                    <h4>{dishName}</h4>
+                                                </td>
+                                                <td className="itemQuantity">
+                                                    <h4 className='quantityControl dFlex'>
+                                                        <span onClick={() => quantity <= 1 ? handleRemoveItem(_id) : handleDecreaseQuantity(_id)}>-</span>
+                                                        {quantity}
+                                                        <span onClick={() => handleIncreaseQuantity(_id)}>+</span>
+                                                    </h4>
+                                                </td>
+                                                <td className="itemPrice">
+                                                    <h4>{dishPrice} Rs</h4>
+                                                </td>
+                                                <td className='itemTotalprice'>
+                                                    <h4>{dishPrice * quantity} Rs</h4>
+                                                </td>
+                                                <td className="itemControls">
+                                                    <button onClick={() => handleRemoveItem(_id)}><FaTrashAlt /></button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
 
-                        <tfoot>
-                            <tr>
-                                <th colSpan={3}>&nbsp;</th>
-                                <th>Total Items : <span>{totalQuantity}</span></th>
-                                <th>Total Amount : <span>{total}Rs</span></th>
-                                <th><button type='button' className='btn' onClick={() => handleCheckout()}>Checkout</button></th>
-                            </tr>
-                        </tfoot>
-                    </table>
-            }
+                            </tbody>
+
+                            <tfoot>
+                                <tr>
+                                    <th colSpan={3}>&nbsp;</th>
+                                    <th>Total Items : <span>{totalQuantity}</span></th>
+                                    <th>Total Amount : <span>{total}Rs</span></th>
+                                    <th><button type='button' className='btn' onClick={() => handleCheckout()}>Checkout</button></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                }
+            </div>
         </main>
     )
 }
